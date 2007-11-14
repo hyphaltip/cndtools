@@ -1,0 +1,334 @@
+Mercator: Multiple Whole-Genome Orthology Map Construction
+Colin N. Dewey (cdewey@eecs.berkeley.edu)
+
+TABLE OF CONTENTS
+-----------------
+ ABOUT
+ INPUT
+ RUNNING MERCATOR
+ OUTPUT
+ GENERATING INPUT FOR MERCATOR
+ USING MERCATOR WITH GLOBAL ALIGNERS
+ ALIGNING LARGE COLINEAR SEQUENCES WITH MERCATOR AND MAVID
+ ALIGNING GENOMES WITH MERCATOR AND MAVID
+
+ABOUT
+-----
+
+Mercator is a program for building high-level orthology maps between
+multiple whole-genomes.  It is primarily intended for large eukaryotic
+genomes, but it should produce useful output for smaller eukaryotic
+and prokaryotic genomes.  The basic strategy of Mercator is to use
+coding exons as anchors for determining the segments of each genome
+that are orthologous to each other.  By considering all genomes
+simultaneously, Mercator produces an orthology map that is 1-to-1
+between every pair of genomes and that is consistent (transitive)
+across all genomes.
+
+Depending on the input data, Mercator can be used in a couple of ways
+with the help of some scripts that are included in this
+distribution.  Here are the 3 most common situations:
+
+1.  You have all of the input files (chromosome files, anchor files,
+    and hit files) ready for Mercator.  You will use Mercator
+    directly to generate the orthology map.
+
+2.  You have genome sequences and gene/exon annotations for all
+    genomes.  You will use the makeMercatorInput script to compare
+    all of the exon sequences pairwise and generate the proper input
+    files for Mercator.
+
+3.  You have a set of genome sequences for which you would like to
+    generate a multiple alignment using MAVID.  You will use the
+    makeMavidConstraints script to generate constraints and other
+    information for MAVID to use while aligning the sequences.
+
+
+INPUT
+-----
+
+There are three sets of files that Mercator requires as input.  For
+each genome you must provide a chromosome file and anchor file.  For
+each pair of genomes, you must provide a hit file.  All files are
+tab delimited.
+
+- Chromosome File: For each genome G, you must provide a file
+  "G.chroms" that lists the chromosome (or contig if this is draft
+  sequence) names and lengths of genome G.  The chromosome file has
+  lines of the following format:
+  
+  chromName chromLength
+
+- Anchor File: For each genome G, you must provide a file "G.anchors"
+  that lists the anchors (most likely just coding exons) in G.  The
+  anchor file has lines of the following format:
+
+  anchorName chromName strand startCoord endCoord isCoding
+
+  Start and end coordinates should be 0-based (The first base in the
+  genome is 0 not 1) and the base at the end coordinate is not
+  included in the interval: the anchor occurs at the half-open
+  interval [start, end).  The strand field should be either + or -.
+  The isCoding field should be 1 if the anchor represents a coding
+  region, else it should be 0.
+
+- Hit File: For each pair of genomes (G1, G2), you must provide a file
+  G1-G2.hits (or G2-G1.hits, but not both).  It lists the similarities
+  (as found by BLAT, BLAST, etc.) between the anchors in the two
+  genomes.  The hit files have lines of the following format:
+
+  anchorName1 anchorName2 score evalue
+
+  If e-values are not available, they can all be set to 1 (or some
+  value less than that set by the --max-eval option).
+
+All of these input files should be placed in a single directory that
+Mercator can access.  For K genomes, there should be 
+K + K + K(K - 1)/2 = (3/2)K + (1/2)K^2 input files total.
+
+
+RUNNING MERCATOR
+----------------
+
+Assuming you have put all of the input files in a directory called
+"input" and would like to direct Mercator's output to a directory
+called "output", running Mercator amounts to running the command:
+
+mercator -i input -o output genomeName1 genomeName2 ... genomeNameK
+
+If any of the genomes are of draft quality (meaning they consist of a
+large number of contigs that have not been mapped to chromosomes),
+you should prefix each draft genome's name with the "-d" (or
+"--draft") option.  For example, if G1 and G3 are mapped to
+chromosomes, but G2 and G4 are only in contigs, you would run
+Mercator as:
+
+mercator -i input -o output G1 -d G2 G3 -d G4
+
+Additional options to Mercator can be listed by running:
+
+mercator --help
+
+Documentation for additional options will be included in this file as
+it is generated.
+
+
+OUTPUT
+------
+
+Among the outputs of Mercator are the "map", "strict.map", "runs",
+"pairwisehits", and "genomes" files.  In addition, for each genome G,
+files "G.coverage" and "G.mgr" are output.  For each draft genome, a
+file "G.agp" will be output.  These files are described below:
+
+genomes: This file lists the names of the genomes that were given as
+    input to Mercator.  The order of the genomes in this file
+    correspond to the order of the fields in the other output files.
+
+strict.map: This file lists the orthologous segments found by
+    Mercator.  Each line corresponds to a set of orthologous segments
+    and has the following format:
+
+segmentNum chrom1 start1 end1 strand1 chrom2 start2 end2 strand2 ... 
+
+    where the (chrom, start, end, strand) tuple is repeated for all K
+    input genomes in the order given by the "genomes" output file.
+    If a genome does not have sequence orthologous to the other
+    sequences in a segment set, its fields will be marked as "NA" for
+    that segment.
+
+map: This file is the same as the strict.map file except that the
+    coordinates for each segment have been extended beyond the
+    coordinates of the anchors that bound that segment.  In the
+    current implementation, the sequence between each pair of strict
+    segments is simply divided in the middle and added to the
+    adjacent segments.
+
+runs: This file lists the anchor cliques and their ordering into runs
+    which make up the segments.  Each line corresponds to an exon
+    clique and is of the form
+
+anchorName1 anchorName2 ... anchorNameK
+
+    with anchor names appearing in the order of the genomes in the
+    "genomes" file.  If a genome does not have an anchor in a given
+    clique, the anchor name for that genome will be listed as "NA".
+    Cliques are listed in the order in which they appear in runs,
+    with each run being separated by a line consisting of all "NA"s.
+
+pairwisehits: This file lists all of the hits given in the input that
+    were considered to be orthology relations.  These hits correspond
+    to all pairwise hits between anchors in the same clique in the
+    "runs" file.  Each line in this file is an orthology hit and has
+    the following format:
+
+runNum genomeName1 anchorName1 genomeName2 anchorName2
+
+    Runs are numbered according to their order in the "runs" file.
+
+G.coverage: This file simply lists the bp and % coverage of the strict
+    orthology map, broken down by each chromosome in genome G.
+
+G.mgr: This file is made for input to the MGR genome rearrangement
+    program.
+
+G.agp: For genomes that are specified as "draft" genomes, contigs are
+    ordered and oriented to form larger "assembled" contigs.  The
+    coordinates in the orthology map are given in terms of these
+    "assembled" contigs.  This AGP file specifies how the original
+    genome contigs were joined to form the "assembled" contigs.
+
+
+GENERATING INPUT FOR MERCATOR
+-----------------------------
+
+Given a set of genome sequences and gene annotations for these
+genomes, you can use the makeMercatorInput script to generate all of
+the required input for the Mercator program.  To do this, you must
+first put the sequences and annotations in the correct formats and
+files:
+
+1.  For each genome G, make a file G.sdb containing all of the sequences
+    for G.  This file must be in SDB format (my own an efficient format
+    for storing genomic sequence that is in multiple
+    chromosomes/contigs).  Use the utility program "fa2sdb" (included in
+    the cndsrc distribution) to convert genome sequences in FASTA format
+    into a SDB-formatted file.
+
+2.  For each genome G, make a file G.gff containing all of the gene
+    annotations for G.  This file must be in GFF format (a standard
+    format: http://www.sanger.ac.uk/Software/formats/GFF/GFF_Spec.shtml)
+    and must have coordinates that correctly reference the sequences in
+    the G.sdb file.  The gene annotations must include a "CDS" record (a
+    line with the "feature" field set to "CDS") for each coding exon
+    with the "frame" field specified correctly.  Only "CDS" records will
+    be considered as anchors for Mercator.
+
+3.  The makeMercatorInput script requires that you have Jim Kent's
+    blat program in your path.  It also requires that you have all of
+    the programs provided by the cndsrc distribution in your path.
+
+4.  Run the makeMercatorInput script (which should be in your path)
+    as follows:
+
+    makeMercatorInput --genome-dir=GENOMEDIR --gff-dir=GFFDIR
+    --out-dir=OUTPUT GENOME_NAME1 GENOME_NAME2...
+
+    where GENOMEDIR is the directory in which you have placed the
+    genomes in SDB format, GFFDIR is the directory in which you have
+    placed the gene annotations in GFF format, OUTPUT is the directory
+    to which you want to output the Mercator input files, and
+    GENOME_NAME1 GENOME_NAME2... are the names of the input genomes.
+
+5.  Once the makeMercatorInput script has finished, all of the input
+    files required for Mercator will have been generated and you can
+    run Mercator as described in the "RUNNING MERCATOR" section of
+    this document.
+
+
+USING MERCATOR WITH GLOBAL ALIGNERS
+-----------------------------------
+
+Mercator can be used in combination with MAVID to generate high quality
+multiple alignments of genomic sequence.  Depending on the nature of
+your input sequences you will use Mercator in different ways.  
+
+If you have one sequence for each genome (i.e., a single FASTA record
+for each genome) and the sequences are colinear (the homologous
+nucleotides are in the same order and orientation), then you should use
+the "makeMavidConstraints" script.  This script generates alignment
+constraints that can be used by a global genomic alignment program to
+quickly and accurately align long genomic segments.  See the section
+ALIGNING LARGE COLINEAR SEQUENCES WITH MERCATOR AND MAVID for an example
+of how to do this with the global alignment program MAVID.
+
+If you wish to align genomes that are made up of multiple
+chromosomes/contigs and/or are not colinear, then you will want to first
+make an orthology map as described in the previous sections.  Once you
+have created an orthology map, see the section ALIGNING GENOMES WITH
+MERCATOR AND MAVID for an example of how to align the orthologous
+segments specified by the map.
+
+
+ALIGNING LARGE COLINEAR SEQUENCES WITH MERCATOR AND MAVID
+----------------------------------------------------------
+
+The makeMavidConstraints script uses Mercator to generate input for the
+MAVID multiple-alignment program.  This makeMavidConstraints program
+requires that you have both blat and genscan installed.  Given a
+multi-FASTA file containing the genome sequences you wish to align (one
+FASTA record per genome), you can use makeMavidConstraints as follows:
+
+1.  Make sure that blat, genscan, and all of the programs included in
+    the cndsrc distribution are in your PATH.
+
+2.  Run the makeMavidConstraints script:
+
+    makeMavidConstraints --genscan-params PARAMFILE MULTI.FA OUTDIR
+
+    where PARAMFILE is the path to a Genscan parameter file
+    (HumanIso.smat for example), MULTI.FA is your multi-FASTA file,
+    and OUTDIR is the directory to which you want to output the files
+    for MAVID (as well as numerous intermediate files that you might
+    like to examine)
+
+3.  Follow the instructions in the MAVID documentation for using the
+    files generated by the makeMavidConstraints script.
+
+
+ALIGNING GENOMES WITH MERCATOR AND MAVID
+----------------------------------------
+
+Once you have created an orthology map using Mercator, a couple of
+utility programs provided in this distribution can help you to set up
+the input files for a nucleotide-level global multiple alignment
+program, such as MAVID.  The two programs that you will use are
+"phits2constraints" and "makeAlignmentInput."  The program
+"phits2constraints" uses Mercator's output files to create a file
+containing intervals that should be constrained during the alignment.
+Once the "constraints" file has been produced, you will use the
+"makeAlignmentInput" program to generate a directory structure with
+files ready to be aligned by a program such as MAVID.
+
+1.  For easiest use, start within the directory containing the Mercator
+    output files.
+
+2.  Run phits2constraints to generate the "constraints" file:
+
+    phits2constraints --input-dir=INPUTDIR < pairwisehits > constraints
+
+    where INPUTDIR is the directory containing the Mercator input files.
+
+3.  Create SDB files/links for each genome within the directory
+    containing the Mercator output files.  For genomes that were not
+    specified as "draft", simply make a symbolic link to that genome's
+    SDB file.  For "draft" genomes, you will need to assemble the
+    original SDB file into a new "assembled" SDB file.  To do this for a
+    genome G, run the following command:
+
+    sdbAssemble INPUTDIR/G.sdb G.sdb < G.agp
+
+    where INPUTDIR is the directory containing the Mercator input
+    files.  This command will generate a new "assembled" SDB file
+    called G.sdb (the second argument) in the current directory. Note
+    that you do not want to have the Mercator input and output
+    directories be the same.
+
+4.  Make a file "treefile" in the current directory that contains a
+    phylogenetic tree of the species in the orthology map.  This file
+    must be in Newick format
+    (http://evolution.genetics.washington.edu/phylip/newicktree.html).
+
+5.  Make a directory ALIGNMENTDIR to put the alignment files:
+
+    mkdir ALIGNMENTDIR
+
+6.  Run makeAlignmentInput:
+
+    makeAlignmentInput . ALIGNMENTDIR
+
+7.  Each subdirectory of ALIGNMENTDIR now contains the sequences to be
+    aligned for each orthologous segment set identified by the orthology
+    map.  Subdirectory X corresponds to segment set X in the orthology
+    map.  You can now run MAVID (or your favorite global multiple
+    alignment program) on the sequences in each subdirectory.

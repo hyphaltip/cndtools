@@ -1,0 +1,84 @@
+cndsrc: Colin N. Dewey's Source Code (2005-12-04)
+
+CONTENTS 
+-------- 
+This package includes the source code for the many utility programs
+that I have written as well as for the mercator, parametricAlign, and
+recombination programs.  Makefiles are included for compilation of
+these programs so that they may be used and distributed.
+
+PREREQUISITES
+-------------
+In order to successfully compile the programs in this package, you
+must have a couple of external packages installed.  These are:
+
+- Optik: http://optik.sourceforge.net/
+  - Only required if your version of python is < 2.3.
+    This python library must be installed system-wide or in your
+    personal python library directory (e.g. $HOME/lib/python).
+
+- BLAT: http://www.cse.ucsc.edu/~kent/
+  - Only required if you wish to generate input for the
+    mercator program using the makeMercatorInput script.
+
+- Genscan: http://genes.mit.edu/GENSCAN.html
+  - Only required if you wish to run the makeMavidConstraints script
+    for generating constraints for the MAVID multiple alignment
+    program
+
+- Polymake: http://www.math.tu-berlin.de/polymake/
+  - Only required if you wish to build the parametricAlign program.
+  - If installed, the environment variable POLYMAKE_PATH should be set
+    to the directory in which you have installed the polymake package
+    (using both the "make install" and "make install-devel" commands in
+    the unpacked polymake directory)
+
+INSTALLATION
+------------
+
+1. Make sure that all prerequisites have been installed correctly
+
+2. Unpack the source code tarball: 
+
+   tar zxf cndsrc-XXXX.XX.XX.tar.gz
+
+3. Change to the cndsrc directory:
+
+   cd cndsrc-XXXX.XX.XX
+
+4. Build all programs:
+
+   make
+
+5. Install programs to the "bin" directory in the directory specified
+   by the --prefix option (in this example the programs will be installed
+   in /usr/local/cndsrc-XXXX-XX-XX/bin): 
+
+   make install prefix=/usr/local/cndsrc-XXXX-XX-XX"
+
+RUNNING UTILITY PROGRAMS
+------------------------
+
+Most of the small utility programs (e.g. faReformat) are fairly simple and
+you can get the usage information for each of these programs by
+running them with the "--help" option.  For example:
+
+$ faReformat --help
+Usage: faReformat [options] < fastaInput
+Reformat fasta input
+
+Options: 
+  -?, --help                  Display this help message
+  -s, --strip-title           truncate the title for each record at the first
+                              whitespace character
+  -g, --remove-gaps           remove gaps from sequences
+  -w, --width=NUM             number of characters at which sequence is wrapped
+                              (default: 60)
+
+
+RUNNING APPLICATIONS
+--------------------
+
+For instructions on running the larger applications (i.e. mercator,
+parametricAlign, and recombination programs), please read the README
+files in the appropriate subdirectory of the "apps" directory.
