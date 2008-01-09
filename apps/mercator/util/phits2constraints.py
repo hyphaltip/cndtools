@@ -95,8 +95,8 @@ class PairwiseHit:
         self.run_id = int(run_id)
         self.genome1 = genome1
         self.genome2 = genome2
-        self.anchor1 = int(anchor1)
-        self.anchor2 = int(anchor2)
+        self.anchor1 = anchor1
+        self.anchor2 = anchor2
 
 class PairwiseHitFileParser:
     def __init__(self, handle):
