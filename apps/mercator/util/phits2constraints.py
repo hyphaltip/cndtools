@@ -134,10 +134,8 @@ class ProteinAnchorFileParser:
             raise StopIteration
         fields = line[:-1].split('\t')
         p = ProteinAnchor()
-        p.id = int(fields[0])
-        p.chrom, p.strand = fields[1:3]
-        p.start, p.end = map(int, fields[3:5])
-        p.isCoding = int(fields[5])
+        p.id, p.chrom, p.strand = fields[0:3]
+        p.start, p.end, p.isCoding = map(int, fields[3:6])
         return p
 
 def readPairwiseHitFile(handle):
