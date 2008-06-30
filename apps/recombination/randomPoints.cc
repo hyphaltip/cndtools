@@ -44,7 +44,7 @@ int main(int argc, const char* argv[]) {
 	// Set up options and arguments
 	size_t n = 10;
 	size_t d = 2;
-	uint32_t seed = std::clock();
+	base_generator_type::result_type seed = std::time(0);
 	
 	// Set up option parser
 	util::options::Parser parser(USAGE, DESCRIPTION);
