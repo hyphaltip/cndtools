@@ -32,18 +32,32 @@ if len(args) != 0:
     optparser.error("No arguments required")
 
 def alignDir(dir, files):
-    for f in (options.constraints_file, options.treefile, options.seqsfile,
-              options.seqsfile + ".masked"):
-        if f not in files:
-            print >>sys.stderr, \
-                  "Leaf directory %s does not have required file %s" % (dir, f)
-            return
+    # Check if alignment already made
     if options.skip_completed and "mavid.mfa" in files:
 	return
+
+    # Check for required files
+    for f in (options.treefile, options.seqsfile, options.seqsfile + ".masked"):
+        if f not in files:
+            print >>sys.stderr, \
+                  "Error: Directory '%s' does not have required file %s" % \
+                  (dir, f)
+            sys.exit(1)
+
     print >>sys.stderr, dir
-    cmd = ("cd %s; %s -c %s %s %s > %s 2>&1" % \
-           (dir, options.mavid, options.constraints_file, options.treefile, options.seqsfile,
-            "mavid.log"))
+
+    cmd_options = ""
+
+    # Check for optional files
+    if options.constraints_file in files:
+        cmd_options += " -c " + options.constraints_file
+    else:
+        print >>sys.stderr, \
+            "Warning: Directory '%s' does not have constraints file" % dir
+
+    cmd = ("cd %s; %s %s %s %s > %s 2>&1" % \
+               (dir, options.mavid, cmd_options, options.treefile, options.seqsfile,
+                "mavid.log"))
     os.system(cmd)
 
 def processDir(dir):
