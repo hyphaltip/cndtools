@@ -82,16 +82,16 @@ void sortGFFRecords(std::vector<GFFRecord*>& recs) {
 struct OverlapRecorder {
 	OverlapRecorder(std::set<GFFRecord*>& overlapped1,
 					std::set<GFFRecord*>& overlapped2)
-		: overlapped1(overlapped1), overlapped2(overlapped2) {
+		: overlapped1(&overlapped1), overlapped2(&overlapped2) {
 	}
 
  	void operator()(const std::pair<GFFRecord*, GFFRecord*>& overlap) {
-		overlapped1.insert(overlap.first);
-		overlapped2.insert(overlap.second);
+		overlapped1->insert(overlap.first);
+		overlapped2->insert(overlap.second);
 	}
 	
-	std::set<GFFRecord*>& overlapped1;
-	std::set<GFFRecord*>& overlapped2;
+	std::set<GFFRecord*>* overlapped1;
+	std::set<GFFRecord*>* overlapped2;
 };
 
 int main(int argc, const char* argv[]) {
