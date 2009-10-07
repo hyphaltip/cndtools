@@ -59,9 +59,10 @@ namespace bio { namespace agp {
 	
 	void AGPBackwardMapper::map(const genome::Interval& i,
 								std::vector<genome::BasicInterval>& mapped) {
+		genome::BasicInterval query(i);
 		std::vector<formats::agp::Record>::const_iterator start
 			= std::lower_bound(agpRecs.begin(), agpRecs.end(),
-							   i, AGPIntervalComparer());
+							   query, AGPIntervalComparer());
 		if (start == agpRecs.end()) {
 			return;
 		}
