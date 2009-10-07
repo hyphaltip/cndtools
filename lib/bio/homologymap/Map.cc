@@ -19,6 +19,7 @@
 
 #include "bio/homologymap/Map.hh"
 #include "util/io/line/InputStream.hh"
+#include <algorithm>
 
 namespace bio { namespace homologymap {
 

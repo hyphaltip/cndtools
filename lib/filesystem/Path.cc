@@ -18,6 +18,7 @@
 */
 
 #include <cerrno>
+#include <cstring>
 
 #include "util/io.hh"
 #include "filesystem/Path.hh"

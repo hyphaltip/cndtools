@@ -21,6 +21,7 @@
 #define __SEGMENT_SET_HH__
 
 #include <vector>
+#include <ostream>
 
 #include "types.hh"
 

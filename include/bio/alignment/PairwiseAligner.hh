@@ -31,7 +31,7 @@ namespace bio { namespace alignment {
 		typedef std::vector<PairwiseAlignment> AlignmentList;
 		
 		virtual PairwiseAlignment align(const std::string& seq1,
-										const std::string& seq1) const = 0;
+						const std::string& seq2) const = 0;
 
 // 		virtual void align(const std::string& seq1,
 // 						   const std::string& seq1,

@@ -18,6 +18,7 @@
 */
 
 #include "bio/alignment/ConsensusAlignment.hh"
+#include <algorithm>
 
 namespace bio { namespace alignment {
 	

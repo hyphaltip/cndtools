@@ -21,6 +21,7 @@
 #define __UTIL_MATRIX_HH__
 
 #include <valarray>
+#include <ostream>
 
 namespace util {
 

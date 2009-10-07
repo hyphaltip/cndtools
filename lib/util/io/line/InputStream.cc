@@ -20,6 +20,7 @@
 #include "util/io/line/InputStream.hh"
 
 #include <istream>
+#include <algorithm>
 
 namespace util { namespace io { namespace line {
 

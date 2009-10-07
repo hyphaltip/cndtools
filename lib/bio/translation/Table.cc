@@ -19,6 +19,7 @@
 
 #include <string>
 #include <vector>
+#include <cstdlib>
 
 #include "util/charmanip.hh"
 
@@ -102,7 +103,7 @@ namespace bio { namespace translation {
 					|| first == 'Y' || first == 'M' || first == 'W'
 					|| first == 'H');
 		} else {
-			abort();
+			std::abort();
 		}
 		return false;
 	}
