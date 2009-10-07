@@ -18,6 +18,7 @@
 */
 
 #include "bio/formats/maf/Sequence.hh"
+#include <algorithm>
 
 namespace bio { namespace formats { namespace maf {
 

@@ -18,6 +18,7 @@
 */
 
 #include "bio/formats/ucsc/chain/Record.hh"
+#include <algorithm>
 
 namespace bio { namespace formats { namespace ucsc { namespace chain {
 
