@@ -72,7 +72,7 @@ class BlatHitFileParser:
             fields = line[:-1].split('\t')
 
             h = BlatHit()
-            h.queryID, h.subjectID = map(int, fields[0:2])
+            h.queryID, h.subjectID = fields[0:2]
 
             try:
                 if self.phits[h.queryID].anchor2 != h.subjectID:
