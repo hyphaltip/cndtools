@@ -86,7 +86,7 @@ private: // required holder implementation
 #  undef BOOST_PYTHON_UNFORWARD_LOCAL
 
 template <class Value>
-void* value_holder<Value>::holds(type_info dst_t, bool null_ptr_only)
+void* value_holder<Value>::holds(type_info dst_t, bool /*null_ptr_only*/)
 {
     if (void* wrapped = holds_wrapped(dst_t, boost::addressof(m_held), boost::addressof(m_held)))
         return wrapped;
@@ -98,7 +98,7 @@ void* value_holder<Value>::holds(type_info dst_t, bool null_ptr_only)
 
 template <class Value, class Held>
 void* value_holder_back_reference<Value,Held>::holds(
-    type_info dst_t, bool null_ptr_only)
+    type_info dst_t, bool /*null_ptr_only*/)
 {
     type_info src_t = python::type_id<Value>();
     Value* x = &m_held;
@@ -117,7 +117,10 @@ void* value_holder_back_reference<Value,Held>::holds(
 
 // --------------- value_holder ---------------
 
-#elif BOOST_PP_ITERATION_DEPTH() == 1 && BOOST_PP_ITERATION_FLAGS() == 1
+// For gcc 4.4 compatability, we must include the
+// BOOST_PP_ITERATION_DEPTH test inside an #else clause.
+#else // BOOST_PP_IS_ITERATING
+#if BOOST_PP_ITERATION_DEPTH() == 1 && BOOST_PP_ITERATION_FLAGS() == 1
 # if !(BOOST_WORKAROUND(__MWERKS__, > 0x3100)                      \
         && BOOST_WORKAROUND(__MWERKS__, BOOST_TESTED_AT(0x3201)))
 #  line BOOST_PP_LINE(__LINE__, value_holder.hpp(value_holder))
@@ -163,4 +166,5 @@ void* value_holder_back_reference<Value,Held>::holds(
 
 # undef N
 
+#endif // BOOST_PP_ITERATION_DEPTH()
 #endif

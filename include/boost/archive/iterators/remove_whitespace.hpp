@@ -7,7 +7,7 @@
 #endif
 
 /////////1/////////2/////////3/////////4/////////5/////////6/////////7/////////8
-// binary_from_base64.hpp
+// remove_whitespace.hpp
 
 // (C) Copyright 2002 Robert Ramey - http://www.rrsd.com . 
 // Use, modification and distribution is subject to the Boost Software
@@ -20,7 +20,7 @@
 
 #include <boost/config.hpp> // for BOOST_DEDUCED_TYPENAME
 
-#include <boost/pfto.hpp>
+#include <boost/serialization/pfto.hpp>
 
 #include <boost/iterator/iterator_adaptor.hpp>
 #include <boost/iterator/filter_iterator.hpp>
@@ -62,7 +62,7 @@ struct remove_whitespace_predicate;
 template<>
 struct remove_whitespace_predicate<char>
 {
-    bool operator()(char t){
+    bool operator()(unsigned char t){
         return ! std::isspace(t);
     }
 };

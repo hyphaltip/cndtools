@@ -1,13 +1,13 @@
-//  (C) Copyright Gennadiy Rozental 2005.
+//  (C) Copyright Gennadiy Rozental 2005-2008.
 //  Use, modification, and distribution are subject to the 
 //  Boost Software License, Version 1.0. (See accompanying file 
 //  LICENSE_1_0.txt or copy at http://www.boost.org/LICENSE_1_0.txt)
 
 //  See http://www.boost.org/libs/test for the library home page.
 //
-//  File        : $RCSfile: parser.hpp,v $
+//  File        : $RCSfile$
 //
-//  Version     : $Revision: 1.1 $
+//  Version     : $Revision: 57992 $
 //
 //  Description : defines parser - public interface for CLA parsing and accessing
 // ***************************************************************************
@@ -64,7 +64,7 @@ public:
 private:
     // Data members;
     parser&             m_parser;
-    Modifier const&    m_modifiers;
+    Modifier const&     m_modifiers;
 };
 
 }
@@ -114,10 +114,10 @@ public:
     template<typename T>
     void                get( cstring string_id, boost::optional<T>& res ) const
     {
-        const_argument_ptr arg = (*this)[string_id];
+        const_argument_ptr actual_arg = (*this)[string_id];
 
-        if( arg )
-            res = arg_value<T>( *arg );
+        if( actual_arg )
+            res = arg_value<T>( *actual_arg );
         else
             res.reset();
     }
@@ -132,7 +132,7 @@ private:
     // Data members
     argv_traverser              m_traverser;
     std::list<parameter_ptr>    m_parameters;
-    dstring                  m_program_name;
+    dstring                     m_program_name;
 };
 
 //____________________________________________________________________________//
@@ -149,14 +149,5 @@ private:
 #  include <boost/test/utils/runtime/cla/parser.ipp>
 
 #endif
-
-// ************************************************************************** //
-//   Revision History:
-//
-//   $Log: parser.hpp,v $
-//   Revision 1.1  2005/04/12 06:42:43  rogeeff
-//   Runtime.Param library initial commit
-//
-// ************************************************************************** //
 
 #endif // BOOST_RT_CLA_PARSER_HPP_062604GER

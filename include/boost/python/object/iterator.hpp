@@ -129,7 +129,11 @@ namespace detail
       return class_<range_>(name, no_init)
           .def("__iter__", identity_function())
           .def(
+#if PY_VERSION_HEX >= 0x03000000
+              "__next__"
+#else
               "next"
+#endif
             , make_function(
                 next_fn()
               , policies
@@ -177,7 +181,7 @@ namespace detail
   inline object make_iterator_function(
       Accessor1 const& get_start
     , Accessor2 const& get_finish
-    , NextPolicies const& next_policies
+    , NextPolicies const& /*next_policies*/
     , Iterator const& (*)()
     , boost::type<Target>*
     , int

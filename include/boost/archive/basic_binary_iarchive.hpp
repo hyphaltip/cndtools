@@ -22,22 +22,19 @@
 // http://www.boost.org/LICENSE_1_0.txt)
 
 //  See http://www.boost.org for updates, documentation, and revision history.
-#include <cstring>
 
 #include <boost/config.hpp>
 #include <boost/detail/workaround.hpp>
-#if defined(BOOST_NO_STDC_NAMESPACE)
-    namespace std{ using ::memcpy; }
-#endif
+#include <boost/serialization/pfto.hpp>
 
-#include <boost/throw_exception.hpp>
-#include <boost/pfto.hpp>
-
-#include <boost/archive/detail/iserializer.hpp>
-#include <boost/archive/detail/interface_iarchive.hpp>
 #include <boost/archive/detail/common_iarchive.hpp>
-
+#include <boost/serialization/collection_size_type.hpp>
 #include <boost/serialization/string.hpp>
+
+#ifdef BOOST_MSVC
+#  pragma warning(push)
+#  pragma warning(disable : 4511 4512)
+#endif
 
 #include <boost/archive/detail/abi_prefix.hpp> // must be the last header
 
@@ -50,24 +47,24 @@ template<class Archive>
 class basic_binary_iarchive : 
     public detail::common_iarchive<Archive>
 {
+protected:
 #if BOOST_WORKAROUND(BOOST_MSVC, <= 1300)
 public:
 #elif defined(BOOST_MSVC)
     // for some inexplicable reason insertion of "class" generates compile erro
     // on msvc 7.1
     friend detail::interface_iarchive<Archive>;
-protected:
 #else
     friend class detail::interface_iarchive<Archive>;
-protected:
 #endif
     // intermediate level to support override of operators
     // fot templates in the absence of partial function 
-    // template ordering
+    // template ordering. If we get here pass to base class
+    // note extra nonsense to sneak it pass the borland compiers
+    typedef detail::common_iarchive<Archive> detail_common_iarchive;
     template<class T>
-    void load_override(T & t, BOOST_PFTO int)
-    {
-        archive::load(* this->This(), t);
+    void load_override(T & t, BOOST_PFTO int version){
+      this->detail_common_iarchive::load_override(t, static_cast<int>(version));
     }
     // binary files don't include the optional information 
     void load_override(class_id_optional_type & /* t */, int){}
@@ -76,38 +73,50 @@ protected:
     // for these pseudo prmitive types.
     void load_override(version_type & t, int){ 
         // upto 255 versions
-        unsigned char x;
+        unsigned char x=0;
         * this->This() >> x;
         t = version_type(x);
     }
     void load_override(class_id_type & t, int){
         // upto 32K classes
-        int_least16_t x;
+        int_least16_t x=0;
         * this->This() >> x;
         t = class_id_type(x);
     }
     void load_override(class_id_reference_type & t, int){
         // upto 32K classes
-        int_least16_t x;
+        int_least16_t x=0;
         * this->This() >> x;
         t = class_id_reference_type(x);
     }
     void load_override(object_id_type & t, int){
         // upto 2G objects
-        uint_least32_t x;
+        uint_least32_t x=0;
         * this->This() >> x;
         t = object_id_type(x);
     }
     void load_override(object_reference_type & t, int){
         // upto 2G objects
-        uint_least32_t x;
+        uint_least32_t x=0;
         * this->This() >> x;
         t = object_reference_type(x);
     }
     void load_override(tracking_type & t, int){
-        char x;
+        char x=0;
         * this->This() >> x;
         t = (0 != x);
+    }
+    void load_override(serialization::collection_size_type & t, int){
+      if (this->get_library_version() < 6) {
+        unsigned int x=0;
+        * this->This() >> x;
+        t = serialization::collection_size_type(x);
+      } 
+      else {
+        std::size_t x=0;
+        * this->This() >> x;
+        t = serialization::collection_size_type(x);
+      }
     }
 
     BOOST_ARCHIVE_OR_WARCHIVE_DECL(void)
@@ -122,6 +131,10 @@ protected:
 
 } // namespace archive
 } // namespace boost
+
+#ifdef BOOST_MSVC
+#pragma warning(pop)
+#endif
 
 #include <boost/archive/detail/abi_suffix.hpp> // pops abi_suffix.hpp pragmas
 

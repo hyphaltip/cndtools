@@ -4,9 +4,9 @@
 /* Copyright (c) 2002,2003,2005 CrystalClear Software, Inc.
  * Use, modification and distribution is subject to the 
  * Boost Software License, Version 1.0. (See accompanying
- * file LICENSE-1.0 or http://www.boost.org/LICENSE-1.0)
+ * file LICENSE_1_0.txt or http://www.boost.org/LICENSE_1_0.txt)
  * Author: Jeff Garland, Bart Garst
- * $Date: 2005/05/25 14:15:40 $
+ * $Date: 2008-11-13 15:10:23 -0500 (Thu, 13 Nov 2008) $
  */
 
 
@@ -40,7 +40,11 @@ namespace date_time {
    private:
      BOOST_STATIC_CONSTANT(int_type, ticks_per_day = INT64_C(86400) * config::tick_per_second);
    public:
+# if BOOST_WORKAROUND( __BORLANDC__, BOOST_TESTED_AT(0X581) )
+    typedef date_time::wrapping_int< split_timedate_system::int_type, split_timedate_system::ticks_per_day> wrap_int_type;
+# else
     typedef date_time::wrapping_int<int_type, ticks_per_day> wrap_int_type;
+#endif
 #endif
 
     static time_rep_type get_time_rep(special_values sv)
@@ -72,7 +76,7 @@ namespace date_time {
 
     static time_rep_type get_time_rep(const date_type& day,
                                       const time_duration_type& tod,
-                                      date_time::dst_flags dst=not_dst)
+                                      date_time::dst_flags /* dst */ = not_dst)
     {
       if(day.is_special() || tod.is_special()) {
         if(day.is_not_a_date() || tod.is_not_a_date_time()) {
@@ -128,7 +132,7 @@ namespace date_time {
     }
     static std::string zone_name(const time_rep_type&)
     {
-      return "";
+      return std::string();
     }
     static bool is_equal(const time_rep_type& lhs, const time_rep_type& rhs)
     {
@@ -162,12 +166,9 @@ namespace date_time {
         return add_time_duration(base,td1);
       }
 
-      //std::cout << td.ticks() << std::endl;
       wrap_int_type  day_offset(base.time_of_day.ticks());
       date_duration_type day_overflow(static_cast<typename date_duration_type::duration_rep_type>(day_offset.subtract(td.ticks())));
-//       std::cout << "sub: " << base.time_of_day.ticks() << "|"
-//                 << day_offset.as_int() << "|"
-//                 << day_overflow.days() << std::endl;
+
       return time_rep_type(base.day-day_overflow,
                            time_duration_type(0,0,0,day_offset.as_int()));
     }
@@ -181,13 +182,10 @@ namespace date_time {
         time_duration_type td1 = td.invert_sign();
         return subtract_time_duration(base,td1);
       }
+
       wrap_int_type day_offset(base.time_of_day.ticks());      
-      typename date_duration_type::duration_rep_type doff = day_offset.add(td.ticks());
-//       std::cout << "day overflow: " << doff << std::endl;
-//       std::cout << "ticks: "         << td.ticks() << std::endl;
-      date_duration_type day_overflow(doff);
-//       std::cout << "base: " << to_simple_string(base.day) << std::endl;
-//       std::cout << "overflow " << day_overflow.days() << std::endl;
+      date_duration_type day_overflow(static_cast< typename date_duration_type::duration_rep_type >(day_offset.add(td.ticks())));
+
       return time_rep_type(base.day+day_overflow,
                            time_duration_type(0,0,0,day_offset.as_int()));
     }

@@ -22,11 +22,13 @@
 #include <boost/mpl/identity.hpp>
 #include <boost/mpl/integral_c_tag.hpp>
 
-#include <boost/serialization/traits.hpp>
 #include <boost/type_traits/is_base_and_derived.hpp>
+//#include <boost/serialization/traits.hpp>
 
 namespace boost { 
 namespace serialization {
+
+struct basic_traits;
 
 // default version number is 0. Override with higher version
 // when class definition changes.
@@ -39,17 +41,31 @@ struct version
     };
 
     typedef mpl::integral_c_tag tag;
+    // note: at least one compiler complained w/o the full qualification
+    // on basic traits below
     typedef
         BOOST_DEDUCED_TYPENAME mpl::eval_if<
-            is_base_and_derived<basic_traits,T>,
+            is_base_and_derived<boost::serialization::basic_traits,T>,
             traits_class_version<T>,
             mpl::int_<0>
         >::type type;
-    BOOST_STATIC_CONSTANT(unsigned int, value = version::type::value);
+    BOOST_STATIC_CONSTANT(int, value = version::type::value);
 };
 
 } // namespace serialization
 } // namespace boost
+
+/* note: at first it seemed that this would be a good place to trap
+ * as an error an attempt to set a version # for a class which doesn't
+ * save its class information (including version #) in the archive.
+ * However, this imposes a requirement that the version be set after
+ * the implemention level which would be pretty confusing.  If this
+ * is to be done, do this check in the input or output operators when
+ * ALL the serialization traits are available.  Included the implementation
+ * here with this comment as a reminder not to do this!
+ */
+//#include <boost/serialization/level.hpp>
+//#include <boost/mpl/equal_to.hpp>
 
 // specify the current version number for the class
 #define BOOST_CLASS_VERSION(T, N)                                      \
@@ -61,18 +77,11 @@ struct version<T >                                                     \
     typedef mpl::int_<N> type;                                         \
     typedef mpl::integral_c_tag tag;                                   \
     BOOST_STATIC_CONSTANT(unsigned int, value = version::type::value); \
-    /* require that class info saved when versioning is used */        \
     /*                                                                 \
     BOOST_STATIC_ASSERT((                                              \
-        mpl::or_<                                                      \
-            mpl::equal_to<                                             \
-                mpl::int_<0>,                                          \
-                mpl::int_<N>                                           \
-            >,                                                         \
-            mpl::equal_to<                                             \
-                implementation_level<T>,                               \
-                mpl::int_<object_class_info>                           \
-            >                                                          \
+        mpl::equal_to<                                                 \
+            :implementation_level<T >,                                 \
+            mpl::int_<object_class_info>                               \
         >::value                                                       \
     ));                                                                \
     */                                                                 \

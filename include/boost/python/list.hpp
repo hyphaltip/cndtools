@@ -9,6 +9,7 @@
 
 # include <boost/python/object.hpp>
 # include <boost/python/converter/pytype_object_mgr_traits.hpp>
+# include <boost/python/ssize_t.hpp>
 
 namespace boost { namespace python { 
 
@@ -18,17 +19,17 @@ namespace detail
   {
       void append(object_cref); // append object to end
 
-      long count(object_cref value) const; // return number of occurrences of value
+      ssize_t count(object_cref value) const; // return number of occurrences of value
 
       void extend(object_cref sequence); // extend list by appending sequence elements
     
       long index(object_cref value) const; // return index of first occurrence of value
 
-      void insert(int index, object_cref); // insert object before index
+      void insert(ssize_t index, object_cref); // insert object before index
       void insert(object const& index, object_cref);
 
       object pop(); // remove and return item at index (default last)
-      object pop(long index);
+      object pop(ssize_t index);
       object pop(object const& index);
 
       void remove(object_cref value); // remove first occurrence of value
@@ -36,8 +37,12 @@ namespace detail
       void reverse(); // reverse *IN PLACE*
 
       void sort(); //  sort *IN PLACE*; if given, cmpfunc(x, y) -> -1, 0, 1
+#if PY_VERSION_HEX >= 0x03000000
+      void sort(args_proxy const &args, 
+                 kwds_proxy const &kwds);
+#else
       void sort(object_cref cmpfunc);
-
+#endif
 
    protected:
       list_base(); // new list
@@ -86,7 +91,7 @@ class list : public detail::list_base
     }
     
     template <class T>
-    void insert(int index, T const& x) // insert object before index
+    void insert(ssize_t index, T const& x) // insert object before index
     {
         base::insert(index, object(x));
     }
@@ -98,7 +103,7 @@ class list : public detail::list_base
     }
 
     object pop() { return base::pop(); }
-    object pop(long index) { return base::pop(index); }
+    object pop(ssize_t index) { return base::pop(index); }
     
     template <class T>
     object pop(T const& index)
@@ -112,13 +117,15 @@ class list : public detail::list_base
         base::remove(object(value));
     }
 
+#if PY_VERSION_HEX <= 0x03000000
     void sort() { base::sort(); }
-    
+
     template <class T>
     void sort(T const& value)
     {
         base::sort(object(value));
     }
+#endif
     
  public: // implementation detail -- for internal use only
     BOOST_PYTHON_FORWARD_OBJECT_CONSTRUCTORS(list, base)

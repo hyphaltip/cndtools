@@ -48,9 +48,10 @@
 #endif
 
 # include <pyconfig.h>
-# if defined(_SGI_COMPILER_VERSION) && _SGI_COMPILER_VERSION == 741
+# if defined(_SGI_COMPILER_VERSION) && _SGI_COMPILER_VERSION >= 740
 #  undef _POSIX_C_SOURCE
 #  undef _XOPEN_SOURCE
+#  undef HAVE_STDINT_H // undo Python 2.5.1 define
 # endif
 
 //
@@ -173,6 +174,19 @@ typedef int pid_t;
 # define PyObject_INIT(op, typeobj) \
         ( (op)->ob_type = (typeobj), _Py_NewReference((PyObject *)(op)), (op) )
 #endif
+
+// Define Python 3 macros for Python 2.x
+#if PY_VERSION_HEX < 0x02060000
+
+# define Py_TYPE(o)    (((PyObject*)(o))->ob_type)
+# define Py_REFCNT(o)  (((PyObject*)(o))->ob_refcnt)
+# define Py_SIZE(o)    (((PyVarObject*)(o))->ob_size)
+
+# define PyVarObject_HEAD_INIT(type, size)	\
+  	PyObject_HEAD_INIT(type) size,
+
+#endif
+
 
 #ifdef __MWERKS__
 # pragma warn_possunwant off
