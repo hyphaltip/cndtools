@@ -29,7 +29,7 @@
 
 // General utilities
 #include "boost/bind.hpp"
-#include "boost/property_map.hpp"
+#include "boost/property_map/property_map.hpp"
 // Graph utilities
 #include "boost/graph/adjacency_list.hpp"
 #include "boost/graph/kruskal_min_spanning_tree.hpp"
