@@ -23,10 +23,11 @@
 #include <limits>
 #include <stack>
 
-#include "boost/spirit/core.hpp"
-#include "boost/spirit/utility/lists.hpp"
-#include "boost/spirit/utility/confix.hpp"
-using namespace boost::spirit;
+#include "boost/spirit/include/classic_core.hpp"
+//#include "boost/spirit/include/classic_grammar.hpp"
+#include "boost/spirit/include/classic_lists.hpp"
+#include "boost/spirit/include/classic_confix.hpp"
+using namespace boost::spirit::classic;
 
 #include "bio/phylogenetic/Tree.hh"
 #include "bio/phylogenetic/ConstTreeVisitor.hh"
