@@ -30,7 +30,7 @@ int main(int argc, const char* argv[]) {
 	std::ios::sync_with_stdio(false);
 
 	// Values to be (optionally) specified on the command line
-	size_t minLength = 1;
+	int minLength = 1;
 	
 	// Parse options
 	util::options::Parser parser("< gffInput > anchorOutput",
