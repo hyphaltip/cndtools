@@ -25,6 +25,7 @@
 #include <string>
 #include <vector>
 #include <stdio.h>
+#include <stdint.h>
 
 #define IO_BUFFER_SIZE (4 * 1024)
 
