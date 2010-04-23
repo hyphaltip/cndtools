@@ -20,7 +20,7 @@
 #include <iostream>
 
 #include "bio/formats/maf.hh"
-#include "util/stl.hh"
+#include "boost/unordered_set.hpp"
 #include "util/options.hh"
 using namespace bio::formats;
 
@@ -32,7 +32,7 @@ struct SequenceSelector {
 		return genomes.find(s.getGenomeAndChrom().first) == genomes.end();
 	}
 
-	util::stl::hash_set<std::string> genomes;
+    boost::unordered_set<std::string> genomes;
 };
 
 bool is_all_gap_column(std::vector<maf::Sequence>& seqs, size_t col) {

@@ -103,8 +103,8 @@ namespace bio { namespace phylogenetic {
 		return t;
 	}
 	
-	Tree* Tree::getSubtree(util::stl::hash_set<std::string>& taxa,
-						   bool keepDescendants) const {
+Tree* Tree::getSubtree(boost::unordered_set<std::string>& taxa,
+                       bool keepDescendants) const {
 		bool includedTaxon = (taxa.find(label) != taxa.end());
 		
 		if (keepDescendants and includedTaxon) {

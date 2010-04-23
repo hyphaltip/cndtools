@@ -27,7 +27,7 @@
 
 #include "bio/genome/BasicInterval.hh"
 #include "util/io.hh"
-#include "util/stl.hh"
+#include "boost/unordered_map.hpp"
 
 namespace bio { namespace gff {
 
@@ -82,7 +82,7 @@ namespace bio { namespace gff {
 		bool operator<(const GFFRecord& r) const;
 		
 	private:
-		typedef util::stl::hash_map<std::string, const std::string*> StringMap;
+		typedef boost::unordered_map<std::string, const std::string*> StringMap;
 		typedef std::list<Attribute> AttributeList;
 
 		struct AttributeFinder {

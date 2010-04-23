@@ -26,7 +26,7 @@
 #include "bio/formats/fasta/InputStream.hh"
 #include "bio/translation/Table.hh"
 #include "util/parser.hh"
-#include "util/stl.hh"
+#include "boost/unordered_map.hpp"
 #include "util/options.hh"
 
 int main(int argc, const char** argv) {
@@ -89,7 +89,7 @@ int main(int argc, const char** argv) {
 		bio::formats::fasta::InputStream fastaStream(protFile);
 		
 		// Read the protein fasta file into a hash table
-		typedef util::stl::hash_map<std::string, bio::formats::fasta::Record> ProteinMap;
+		typedef boost::unordered_map<std::string, bio::formats::fasta::Record> ProteinMap;
 		ProteinMap proteins;
 		bio::formats::fasta::Record faRec;
 		while (fastaStream >> faRec) {

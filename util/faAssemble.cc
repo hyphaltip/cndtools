@@ -27,7 +27,7 @@
 #include "bio/formats/fasta/InputStream.hh"
 #include "bio/formats/fasta/OutputStream.hh"
 #include "bio/alphabet/AmbiguousNucleotide.hh"
-#include "util/stl.hh"
+#include "boost/unordered_map.hpp"
 #include "util/options.hh"
 #include "filesystem/InputFileStream.hh"
 using namespace bio::formats;
@@ -56,7 +56,7 @@ int main(int argc, const char* argv[]) {
 	parser.parse(argv, argv + argc);
 
 	// Read input sequences into a map
-	typedef util::stl::hash_map<std::string, std::string> SeqMap;
+	typedef boost::unordered_map<std::string, std::string> SeqMap;
 	SeqMap seqRecs;
 	bio::formats::fasta::InputStream fastaStream(std::cin);
 	bio::formats::fasta::Record fastaRecord;

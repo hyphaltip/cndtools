@@ -20,8 +20,7 @@
 #ifndef __GENOME_HH__
 #define __GENOME_HH__
 
-#include "util/stl.hh"
-using util::stl::hash_map;
+#include "boost/unordered_map.hpp"
 
 #include "types.hh"
 
@@ -30,7 +29,7 @@ private:
 
 	static vector<Genome*> genomes;
 	static vector<Edge*> edges;
-	static hash_map<string, Genome*> genomeMap;
+	static boost::unordered_map<string, Genome*> genomeMap;
 	
 	string name;
 	size_t num;
@@ -38,8 +37,8 @@ private:
 
 	vector<Chromosome*> chroms;
 
-	hash_map<string, Chromosome*> chromMap;
-	hash_map<string, Anchor*> anchorMap;
+	boost::unordered_map<string, Chromosome*> chromMap;
+	boost::unordered_map<string, Anchor*> anchorMap;
 
 	typedef vector<Chromosome*>::iterator ChromIt;
 	

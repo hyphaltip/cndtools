@@ -23,7 +23,7 @@
 #include <string>
 #include <vector>
 
-#include "util/stl.hh"
+#include "boost/unordered_set.hpp"
 #include "util/matrix.hh"
 		
 namespace bio { namespace phylogenetic {
@@ -118,7 +118,7 @@ namespace bio { namespace phylogenetic {
 		Tree* copy() const;
 		
 		// Return tree with given TAXA contained within this tree
-		Tree* getSubtree(util::stl::hash_set<std::string>& taxa,
+		Tree* getSubtree(boost::unordered_set<std::string>& taxa,
 						 bool keepDescendants = false) const;
 	};
 

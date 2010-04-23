@@ -21,13 +21,13 @@
 
 #include "bio/phylogenetic/Tree.hh"
 #include "bio/formats/newick.hh"
-#include "util/stl.hh"
+#include "boost/unordered_set.hpp"
 #include "util/options.hh"
 
 using namespace bio;
 using namespace formats;
 using phylogenetic::Tree;
-using util::stl::hash_set;
+using boost::unordered_set;
 
 std::string underscoresToSpaces(const std::string& s) {
 	std::string str = s;
@@ -60,7 +60,7 @@ int main(int argc, const char* argv[]) {
 			throw std::runtime_error("Invalid input tree");
 		}
 				
-		util::stl::hash_set<std::string> taxaSet;
+        boost::unordered_set<std::string> taxaSet;
 		for (size_t i = 0; i < taxa.size(); ++i) {
 			taxaSet.insert(underscoresToSpaces(taxa[i]));
 		}

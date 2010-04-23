@@ -21,10 +21,10 @@
 #include <string>
 
 #include "bio/formats/fasta.hh"
-#include "util/stl.hh"
+#include "boost/unordered_set.hpp"
 #include "util/options.hh"
 #include "filesystem.hh"
-using util::stl::hash_set;
+using boost::unordered_set;
 using namespace bio::formats;
 using namespace filesystem;
 
@@ -52,7 +52,7 @@ int main(int argc, const char* argv[]) {
 			}
 		}
 	
-		hash_set<std::string> titles(titlesList.begin(), titlesList.end());
+		unordered_set<std::string> titles(titlesList.begin(), titlesList.end());
 	
 		// Construct FASTA stream for fast reading
 		fasta::InputStream fastaInputStream(std::cin);

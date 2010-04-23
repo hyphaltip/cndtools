@@ -29,15 +29,16 @@
 #include "bio/alphabet/Nucleotide.hh"
 #include "util/options.hh"
 #include "util/string.hh"
-#include "util/stl.hh"
+#include "boost/unordered_set.hpp"
+#include "boost/unordered_map.hpp"
 #include "filesystem.hh"
 using namespace bio;
 using namespace bio::genome;
 using namespace bio::formats;
 using namespace filesystem;
 using util::string::toString;
-using util::stl::hash_map;
-using util::stl::hash_set;
+using boost::unordered_map;
+using boost::unordered_set;
 
 struct Segment {
 	size_t num;
@@ -53,9 +54,9 @@ struct Edge {
 	Strand strand2;
 };
 
-typedef hash_map<size_t, Segment> SegmentMap;
+typedef unordered_map<size_t, Segment> SegmentMap;
 typedef std::vector<Edge> EdgeList;
-typedef hash_map<std::string, SDB::DB> Genomes;
+typedef unordered_map<std::string, SDB::DB> Genomes;
 
 std::istream& operator>>(std::istream& stream, Segment& s) {
 	size_t num;
@@ -147,7 +148,7 @@ void makeEdgeFiles(Edge& e,
 	hardFASTAStream << rec1 << rec2;
 	
 	// Write tree file
-	hash_set<std::string> includedGenomes;
+	unordered_set<std::string> includedGenomes;
 	includedGenomes.insert(underscoresToSpaces(seg1.genome));
 	includedGenomes.insert(underscoresToSpaces(seg2.genome));
 	phylogenetic::Tree* subtree = tree->getSubtree(includedGenomes);

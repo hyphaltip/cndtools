@@ -24,35 +24,11 @@
 #include <numeric>
 #include <iosfwd>
 #include <string>
-#include <ext/hash_map>
-#include <ext/hash_set>
-
-namespace __gnu_cxx {
-
-	template<>
-	struct hash<std::string> {
-		size_t operator()(const std::string& s) const {
-			return hash<char const*>()(s.c_str());
-		}
-	};
-	
-#ifndef _POLYMAKE_STD_HASH_ADAPTER_H		
-	template<class T> struct hash<T*> {
-		size_t operator()(T* __x) const {
-			return reinterpret_cast<size_t>(__x);
-		}
-	};
-#endif
-	
-};
 
 namespace util {
 
 	namespace stl {
-
-		using __gnu_cxx::hash_map;
-		using __gnu_cxx::hash_set;
-		
+    
 		template<typename InputIterator1, typename InputIterator2>
 		size_t matches(InputIterator1 first1, InputIterator1 last1,
 					   InputIterator2 first2) {

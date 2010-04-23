@@ -29,6 +29,7 @@
 
 #include "util/string.hh"
 #include "filesystem/Path.hh"
+#include "util/stl.hh"
 
 void unflipAnchors() {
 	for (size_t i = 0; i < Genome::getNumGenomes(); ++i) {

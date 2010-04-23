@@ -21,7 +21,7 @@
 #define __BIO_FORMATS_UCSC_NET_RECORD_HH__
 
 #include "bio/genome/Interval.hh"
-#include "util/stl.hh"
+#include "boost/unordered_map.hpp"
 
 namespace bio { namespace formats { namespace ucsc { namespace net {
 
@@ -29,7 +29,7 @@ namespace bio { namespace formats { namespace ucsc { namespace net {
 	public:
 		typedef genome::Distance Distance;
 		typedef genome::Strand Orientation;
-		typedef util::stl::hash_map<std::string, std::string> AttributeMap;
+		typedef boost::unordered_map<std::string, std::string> AttributeMap;
 
 		enum RecClass {
 			FILL, // A portion of a chain.

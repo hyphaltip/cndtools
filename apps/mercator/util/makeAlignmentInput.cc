@@ -33,7 +33,8 @@
 #include "bio/alphabet/Nucleotide.hh"
 #include "util/options.hh"
 #include "util/string.hh"
-#include "util/stl.hh"
+#include "boost/unordered_map.hpp"
+#include "boost/unordered_set.hpp"
 #include "util/io.hh"
 #include "util/io/line/InputStream.hh"
 #include "filesystem.hh"
@@ -41,8 +42,8 @@ using namespace bio;
 using namespace filesystem;
 using namespace bio::formats;
 using util::string::toString;
-using util::stl::hash_map;
-using util::stl::hash_set;
+using boost::unordered_map;
+using boost::unordered_set;
 using namespace util::io;
 
 struct Anchor {
@@ -55,7 +56,7 @@ typedef std::vector<Anchor*> AnchorList;
 typedef std::map<std::string, Anchor*> AnchorMap;
 typedef AnchorList Clique;
 typedef std::vector<Clique> Run;
-typedef hash_map<size_t, Run> RunMap;
+typedef unordered_map<size_t, Run> RunMap;
 typedef std::vector<AnchorMap> GenomeAnchorMaps;
 
 struct SimpleConstraint {
@@ -225,7 +226,7 @@ void writeClique(std::ostream& stream, Clique& c, homologymap::Segment& seg) {
 void makeSegmentFiles(homologymap::Segment& seg,
 					  phylogenetic::Tree* tree,
 					  std::vector<std::string>& genomes,
-					  hash_map<std::string, size_t>& genomeNums,
+					  unordered_map<std::string, size_t>& genomeNums,
 					  std::vector<SDB::DB>& dbs,
 					  std::vector<Constraint>& constraints,
 					  Run& run,
@@ -234,7 +235,7 @@ void makeSegmentFiles(homologymap::Segment& seg,
 					  std::ostream& treeFile,
 					  std::ostream& constraintsFile,
 					  std::ostream& runFile) {
-	hash_set<std::string> includedGenomes;
+	unordered_set<std::string> includedGenomes;
 	std::vector<fasta::Record> recs;
 
 	for (size_t i = 0; i < seg.intervals.size(); ++i) {
@@ -330,7 +331,7 @@ int main(int argc, const char* argv[]) {
 		// Read in genome names
 		std::cerr << "Reading genome names...\n";
 		std::vector<std::string> genomes;
-		hash_map<std::string, size_t> genomeNums;
+		unordered_map<std::string, size_t> genomeNums;
 		InputFileStream genomesFile(mapDir / "genomes");
 		std::string genomesString = readStream(genomesFile);
 		util::string::split(genomesString, std::back_inserter(genomes));
@@ -376,7 +377,7 @@ int main(int argc, const char* argv[]) {
 
 		// Read constraints
 		std::cerr << "Reading constraints...\n";
-		hash_map<size_t, std::vector<Constraint> > constraints;
+		unordered_map<size_t, std::vector<Constraint> > constraints;
 		InputFileStream constraintsFile(mapDir / "constraints");
 		Constraint c;
 		while (constraintsFile >> c) {

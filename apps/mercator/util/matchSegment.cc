@@ -25,6 +25,7 @@
 #include "bio/formats/fasta.hh"
 #include "util/options.hh"
 #include "util/string.hh"
+#include "boost/unordered_map.hpp"
 #include "filesystem.hh"
 using namespace filesystem;
 
@@ -33,7 +34,7 @@ using namespace filesystem;
 typedef SegmentTreeSet::Leaf Segment;
 typedef std::vector<Segment*> SegList;
 typedef std::map<std::string, SegList> GenomeSegs;
-typedef util::stl::hash_map<const Segment*, size_t> SegmentLabels;
+typedef boost::unordered_map<const Segment*, size_t> SegmentLabels;
 typedef std::pair<std::string, std::string> StringPair;
 typedef std::map<StringPair, OutputFileStream*> HitFileMap;
 

@@ -24,11 +24,12 @@
 #include "bio/formats/agp.hh"
 #include "util/options.hh"
 #include "util/string.hh"
-#include "util/stl.hh"
+#include "boost/unordered_map.hpp"
+#include "boost/unordered_set.hpp"
 using namespace bio::formats::agp;
 using util::string::toString;
-using util::stl::hash_set;
-using util::stl::hash_map;
+using boost::unordered_set;
+using boost::unordered_map;
 
 struct AGPSorter {
 	bool operator()(const Record2* r1, const Record2* r2) const {
@@ -53,7 +54,7 @@ int main(int argc, const char* argv[]) {
 	parser.parse(argv, argv + argc);
 
 	try {
-		hash_set<std::string> inconsistentChroms(inconsistentChromsVect.begin(),
+		unordered_set<std::string> inconsistentChroms(inconsistentChromsVect.begin(),
 												 inconsistentChromsVect.end());
 
 		typedef std::vector<Record2*> RecList;

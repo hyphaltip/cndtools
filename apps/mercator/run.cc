@@ -19,6 +19,7 @@
 
 #include "run.hh"
 
+#include "util/stl.hh"
 #include "anchor.hh"
 #include "genome.hh"
 #include "chromosome.hh"

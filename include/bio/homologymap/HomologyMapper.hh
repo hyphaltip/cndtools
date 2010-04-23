@@ -24,7 +24,7 @@
 #include <vector>
 
 #include "bio/genome/IntervalMapper.hh"
-#include "util/stl.hh"
+#include "boost/unordered_map.hpp"
 #include "bio/genome/Interval.hh"
 #include "bio/alignment/BasicNamedMultipleAlignment.hh"
 #include "bio/homologymap/Map.hh"
@@ -68,7 +68,7 @@ namespace bio { namespace homologymap {
 		filesystem::Path alignDir;
 		alignment::BasicNamedMultipleAlignment align;
 		size_t lastSegmentNum;
-		util::stl::hash_map<std::string, size_t> genomeIndices;
+        boost::unordered_map<std::string, size_t> genomeIndices;
 		std::string sourceGenome;
 		std::string targetGenome;
 	};

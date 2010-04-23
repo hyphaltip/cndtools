@@ -26,8 +26,7 @@
 #include "boost/function_output_iterator.hpp"
 #include "boost/tokenizer.hpp"
 #include "boost/lexical_cast.hpp"
-
-#include "util/stl.hh"
+#include "boost/unordered_set.hpp"
 
 namespace util {
 
@@ -138,7 +137,7 @@ namespace util {
 	
 		class StringStorer {
 		public:
-			typedef util::stl::hash_set<std::string> StringSet;
+			typedef boost::unordered_set<std::string> StringSet;
 			typedef StringSet::const_iterator Iterator;
 		
 			StringStorer() {}

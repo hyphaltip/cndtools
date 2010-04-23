@@ -22,12 +22,12 @@
 
 #include <string>
 
-#include "util/stl.hh"
+#include "boost/unordered_map.hpp"
 
 namespace bio { namespace formats { namespace maf {
 
     struct VariableMap {
-		typedef util::stl::hash_map<std::string, std::string> Map;
+		typedef boost::unordered_map<std::string, std::string> Map;
 		Map variables;
 
 		const std::string& getVariable(const std::string& var) const;

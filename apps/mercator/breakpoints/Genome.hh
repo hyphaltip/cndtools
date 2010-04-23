@@ -24,10 +24,10 @@
 
 #include "types.hh"
 #include "bio/sdb.hh"
-#include "util/stl.hh"
+#include "boost/unordered_map.hpp"
 #include "filesystem/Path.hh"
 
-typedef util::stl::hash_map<std::string, Genome*> GenomeMap;
+typedef boost::unordered_map<std::string, Genome*> GenomeMap;
 typedef std::vector<Genome*> GenomeList;
 
 class Genome {

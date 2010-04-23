@@ -69,7 +69,7 @@ namespace bio { namespace homologymap {
 	}
 	
 	size_t HomologyMapper::getIndex(const std::string& g) const {
-		util::stl::hash_map<std::string, size_t>::const_iterator it;
+        boost::unordered_map<std::string, size_t>::const_iterator it;
 		it = genomeIndices.find(g);
 		if (it == genomeIndices.end()) {
 			throw std::runtime_error(g + " not in map");

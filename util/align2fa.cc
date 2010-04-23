@@ -29,7 +29,7 @@ using boost::tie;
 #include "bio/formats/fasta/OutputStream.hh"
 #include "bio/sdb.hh"
 #include "bio/alphabet/AmbiguousNucleotide.hh"
-#include "util/stl.hh"
+#include "boost/unordered_map.hpp"
 #include "util/io/line/InputStream.hh"
 #include "util/io.hh"
 #include "util/string.hh"
@@ -150,7 +150,7 @@ public:
 
 class FASTAExtractor : public SeqExtractor {
 private:
-	util::stl::hash_map<std::string, std::string> seqMap;
+    boost::unordered_map<std::string, std::string> seqMap;
 public:
 	void init(const std::string& arg) {
 		std::ifstream fastaFile(arg.c_str());

@@ -26,7 +26,7 @@
 
 #include "bio/formats/agp/Record.hh"
 #include "bio/genome/IntervalMapper.hh"
-#include "util/stl.hh"
+#include "boost/unordered_map.hpp"
 
 namespace bio { namespace agp {
 
@@ -42,8 +42,8 @@ namespace bio { namespace agp {
 					 const formats::agp::Record& rec);
 		
 		typedef std::list<formats::agp::Record> AGPList;
-		typedef util::stl::hash_map<std::string, AGPList> AGPMap;
-		typedef util::stl::hash_map<std::string, genome::Distance> LengthMap;
+		typedef boost::unordered_map<std::string, AGPList> AGPMap;
+		typedef boost::unordered_map<std::string, genome::Distance> LengthMap;
 		AGPMap contigMap;
 		LengthMap chromSizes;
 	};

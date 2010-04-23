@@ -27,6 +27,7 @@
 #include "bio/formats/fasta.hh"
 #include "bio/translation/Table.hh"
 #include "util/options.hh"
+#include "boost/unordered_map.hpp"
 
 struct Anchor {
 	std::string name;
@@ -73,7 +74,7 @@ public:
 
 class FASTASequenceExtractor : public SequenceExtractor {
 private:
-	util::stl::hash_map<std::string, std::string> seqMap;
+    boost::unordered_map<std::string, std::string> seqMap;
 public:
 	void init(const std::string& filename) {
 		std::ifstream fastaFile(filename.c_str());

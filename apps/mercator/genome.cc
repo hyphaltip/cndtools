@@ -31,7 +31,7 @@
 
 vector<Genome*> Genome::genomes = vector<Genome*>();
 vector<Edge*> Genome::edges = vector<Edge*>();
-hash_map<string, Genome*> Genome::genomeMap = hash_map<string, Genome*>();
+boost::unordered_map<string, Genome*> Genome::genomeMap;
 
 void Genome::unflipAnchors() {
 	for_each(chroms.begin(), chroms.end(), mem_fun(&Chromosome::unflipAnchors));

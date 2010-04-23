@@ -21,7 +21,7 @@
 #include <map>
 
 #include "bio/genome/BasicInterval.hh"
-#include "util/stl.hh"
+#include "boost/unordered_map.hpp"
 
 template<typename Map1, typename Map2>
 void invert_map(const Map1& m1, Map2& m2) {
@@ -39,7 +39,7 @@ public:
 	class Leaf;
 
 	typedef size_t Position;
-	typedef util::stl::hash_map<std::string, Sequence*> SeqMap;
+	typedef boost::unordered_map<std::string, Sequence*> SeqMap;
 	typedef SeqMap::iterator SeqMapIter;
 	typedef SeqMap::const_iterator SeqMapConstIter;
 	typedef std::vector<Sequence*> SeqList;
@@ -53,7 +53,7 @@ public:
 	typedef BlockMap::iterator BlockMapIter;
 	typedef BlockMap::const_iterator BlockMapConstIter;
 	typedef std::pair<BlockMapIter, BlockMapIter> BlockMapIterPair;
-	typedef util::stl::hash_set<TreeNode*> TreeSet;
+	typedef boost::unordered_set<TreeNode*> TreeSet;
 	typedef std::vector<Leaf*> SegmentList;
 
 	SegmentTreeSet() {}

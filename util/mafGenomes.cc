@@ -20,7 +20,7 @@
 #include <iostream>
 
 #include "bio/formats/maf.hh"
-#include "util/stl.hh"
+#include "boost/unordered_set.hpp"
 #include "util/options.hh"
 using namespace bio::formats;
 
@@ -36,7 +36,7 @@ int main(int argc, const char* argv[]) {
 
 	try {
 		maf::InputStream input_stream(std::cin);
-		util::stl::hash_set<std::string> genomes;
+        boost::unordered_set<std::string> genomes;
 		
 		maf::Record rec;
 		while (input_stream >> rec) {

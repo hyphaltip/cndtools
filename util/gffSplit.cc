@@ -23,7 +23,7 @@
 #include "bio/gff/GFFRecord.hh"
 #include "bio/gff/GFFInputStream.hh"
 #include "util/parser.hh"
-#include "util/stl.hh"
+#include "boost/unordered_map.hpp"
 #include "util/options.hh"
 #include "filesystem/Path.hh"
 
@@ -71,7 +71,7 @@ int main(int argc, const char** argv) {
 	}
 	
 	// Make a map from field values to files for records with that field value
-	typedef util::stl::hash_map<std::string, std::ofstream*> FileMap;
+	typedef boost::unordered_map<std::string, std::ofstream*> FileMap;
 	FileMap files;
 	
 	try {

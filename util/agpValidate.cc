@@ -26,12 +26,8 @@
 #include "bio/formats/agp/InputStream.hh"
 #include "util/options.hh"
 #include "util/string.hh"
-#include "util/stl.hh"
 using namespace bio::formats::agp;
 using util::string::toString;
-using util::stl::hash_set;
-using util::stl::hash_map;
-
 
 class AGPValidationError : public std::runtime_error {
 public:
