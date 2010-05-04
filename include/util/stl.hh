@@ -22,7 +22,8 @@
 
 #include <functional>
 #include <numeric>
-#include <iosfwd>
+#include <ostream>
+#include <algorithm>
 #include <string>
 
 namespace util {
